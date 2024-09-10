@@ -1,6 +1,7 @@
 const express=require("express");
-const {zodUserSchema, updateSchema}=require('../schemas/userSchema');
+const {zodUserSchema, updateSchema, signinSchema}=require('../schemas/userSchema');
 const User=require("../models/user");
+const Account=require("../models/account")
 const JWT_SECRET=require('../config')
 const jwt= require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -98,6 +99,38 @@ router.get("/bulk", async(req, res)=>{
             username: u.username,
             _id: u._id
         }))
+    })
+})
+
+
+
+router.post("/signin", async (req, res) => {
+    const { success } = signinSchema.safeParse(req.body)
+    if (!success) {
+        return res.status(411).json({
+            message: "Email already taken / Incorrect inputs"
+        })
+    }
+
+    const user = await User.findOne({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    if (user) {
+        const token = jwt.sign({
+            userId: user._id
+        }, JWT_SECRET);
+  
+        res.json({
+            token: token
+        })
+        return;
+    }
+
+    
+    res.status(411).json({
+        message: "Error while logging in"
     })
 })
 module.exports= router;

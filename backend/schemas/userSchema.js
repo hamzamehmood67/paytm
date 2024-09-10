@@ -13,4 +13,9 @@ const updateSchema=zod.object({
     password: zod.string().optional()
 })
 
-module.exports= {userSchema, updateSchema};
+const signinSchema = zod.object({
+    username: zod.string().email(),
+	password: zod.string()
+})
+
+module.exports= {userSchema, updateSchema, signinSchema};
