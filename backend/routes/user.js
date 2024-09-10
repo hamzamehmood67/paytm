@@ -1,5 +1,5 @@
 const express=require("express");
-const {zodUserSchema, updateSchema, signinSchema}=require('../schemas/userSchema');
+const {userSchema, updateSchema, signinSchema}=require('../schemas/userSchema');
 const User=require("../models/user");
 const Account=require("../models/account")
 const JWT_SECRET=require('../config')
@@ -11,9 +11,7 @@ const router=express.Router();
 
 router.post('/signup',async (req, res)=>{
     const body= req.body;
- 
-
-    const {success}= zodUserSchema.safeParse(body);
+    const {success}= userSchema.safeParse(body);
 
     if(!success){
         return res.status(411).json(
@@ -44,6 +42,10 @@ router.post('/signup',async (req, res)=>{
         }, JWT_SECRET
     )
 
+    const balance= await Account.create({
+        userId: userId,
+        balance: 1 + Math.random()*1000
+    })
     res.json({
         message: "User Created",
         token: token

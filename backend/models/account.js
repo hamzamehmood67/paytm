@@ -16,5 +16,5 @@ const acountSchema = new mongoose.Schema({
     }
 })
 
-const Account=await mongoose.model("Account", acountSchema);
+const Account= mongoose.model("Account", acountSchema);
 module.exports= Account;
