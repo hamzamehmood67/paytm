@@ -55,18 +55,26 @@ router.post('/signup',async (req, res)=>{
 
 router.put('/', authMiddleware, async (req, res)=>{
     const {success}= updateSchema.safeParse(req.body);
-
+   
     if(!success)
     {
         res.status(411).json({
             message: "Error while updating"
         })
     }
+    
 
-    await User.updateOne(req.body, {
-        id: req.userId
-    })
+    const user=await User.findOneAndUpdate({
+        _id: req.userId
+    },req.body, { new: true } )
+   
 
+
+    if (!user) {
+        return res.status(404).json({
+            message: "User not found"
+        });
+    }
     res.json({
         message: "Updated Successfully"
     })
@@ -75,7 +83,7 @@ router.put('/', authMiddleware, async (req, res)=>{
 
 router.get("/bulk", async(req, res)=>{
     const filter=req.query.filter || '';
-    console.log(filter)
+    
     const users = await User.find({
         $or: [
             {
@@ -93,7 +101,6 @@ router.get("/bulk", async(req, res)=>{
         ]
     });
     
-    console.log(users);
     res.json({
         user: users.map(u =>({
             firstName: u.firstName,
@@ -110,7 +117,7 @@ router.post("/signin", async (req, res) => {
     const { success } = signinSchema.safeParse(req.body)
     if (!success) {
         return res.status(411).json({
-            message: "Email already taken / Incorrect inputs"
+            message: " Incorrect inputs"
         })
     }
 
