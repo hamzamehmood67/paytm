@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true })); 
 app.use("/api/v1", apiRouter);
 
-app.listen(8080, ()=>{
-    console.log("App listening on PORT 8080")
+app.listen(3000, ()=>{
+    console.log("App listening on PORT 3000")
 })
 
