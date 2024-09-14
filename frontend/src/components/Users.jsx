@@ -4,16 +4,28 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
+
+
 export const Users = () => {
     // Replace with backend call
     const [users, setUsers] = useState([]);
     const [filter, setFilter] = useState("");
+    
+    useEffect( () => {
 
-    useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
-            .then(response => {
-                setUsers(response.data.user)
+        async function fetchUser(filter){
+            const response= await  axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
+            const userRes= await axios.get("http://localhost:3000/api/v1/user/profile", {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token") 
+                }
             })
+            const currUser=userRes.data.user
+            
+            setUsers(response.data.user.filter(u=> u._id!==currUser._id))
+        }
+        fetchUser(filter);   
+            
     }, [filter])
 
     return <>

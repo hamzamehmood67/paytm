@@ -111,8 +111,6 @@ router.get("/bulk", async(req, res)=>{
     })
 })
 
-
-
 router.post("/signin", async (req, res) => {
     const { success } = signinSchema.safeParse(req.body)
     if (!success) {
@@ -140,6 +138,23 @@ router.post("/signin", async (req, res) => {
     
     res.status(411).json({
         message: "Error while logging in"
+    })
+})
+
+router.get("/profile", authMiddleware, async (req, res)=>{
+    const userId= req.userId;
+
+    const user= await User.findOne({_id:userId});
+
+    if(!user)
+    {
+        return res.status(404).json({
+            message: "Not Found"
+        })
+    }
+
+    res.status(200).json({
+        user: user
     })
 })
 module.exports= router;

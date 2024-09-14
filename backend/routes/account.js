@@ -12,7 +12,7 @@ router.get("/",async (req, res)=>{
 })
 
 router.get("/balance", authMiddleware, async(req, res)=>{
-    console.log("Request for Balance")
+   
     const account=await Account.findOne({
         userId: req.userId
     })
@@ -28,7 +28,6 @@ router.get("/balance", authMiddleware, async(req, res)=>{
         balance: account.balance
     })
 })
-
 
 router.post("/transfer", authMiddleware, async(req, res)=>{
     const session=await mongoose.startSession();
